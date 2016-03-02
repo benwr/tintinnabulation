@@ -1,0 +1,30 @@
+{
+  "name": "tintinnabulation",
+  "version": "0.0.1",
+  "description": "Musical welling!",
+  "main": "index.js",
+  "dependencies": {
+    "react": "^0.14.7"
+  },
+  "devDependencies": {
+    "http-server": "^0.9.0",
+    "jsx-loader": "^0.13.2",
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "scripts": {
+    "start": "npm run serve | npm run dev",
+    "serve": "./node_modules/.bin/http-server -p 8080",
+    "dev": "webpack-dev-server --progress --colors --port 8090"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benwr/tintinnabulation.git"
+  },
+  "author": "Ben Weinstein-Raun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benwr/tintinnabulation/issues"
+  },
+  "homepage": "https://github.com/benwr/tintinnabulation#readme"
+}
