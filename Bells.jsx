@@ -1,10 +1,15 @@
-'use strict'
+/* global require */
+/* global module */
 
-var React = require('react')
+(function () {
+  'use strict';
+}());
+
+var React = require('react');
 
 module.exports = React.createClass({
     displayName: 'HelloReact',
     render: function () {
-        return <div>Hello World!</div>
+        return <div>Hello Bells!</div>;
     }
-})
+});
