@@ -3,10 +3,10 @@ var Places = function () {
     var lex_place_notation = function (s) {
         var lead_end = '';
         var split = s.split("le");
-        s = split[0];
+        s = split[0].replace(" ", "");
         if (split.length == 2) {
             lead_end = split[1];
-            lead_end.replace(/[ \t:]/, '')
+            lead_end = lead_end.replace(/[ :]/, '')
         } else {
             lead_end = null;
         }
@@ -24,6 +24,7 @@ var Places = function () {
             case "-":
                 rows.push(current_change);
                 current_change = [];
+                break;
             default:
                 current_change.push(c);
             }
@@ -63,9 +64,16 @@ var Places = function () {
         return result;
     };
 
+    var mod = function(a, b) {
+        return ((a % b) + b) % b;
+    };
+
     var next_permutation = function (row, changes, index)  {
         var next_row = [];
         var swap = "";
+        if (index >= changes.length || index < 0) {
+            index = mod(index, changes.length);
+        }
         row.forEach(
             function (bell, place) {
                 place = place + 1
@@ -84,8 +92,14 @@ var Places = function () {
         return next_row
     };
 
+    var prev_permutation = function (row, changes, index) {
+        return next_permutation(row, changes, index - 1);
+    };
+
     return {
         lex_place_notation: lex_place_notation,
+        next_permutation: next_permutation,
+        prev_permutation: prev_permutation,
         method_from_place_notation: method_from_place_notation,
     };
 }();
