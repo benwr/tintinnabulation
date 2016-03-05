@@ -55,28 +55,33 @@ var Places = function () {
         var result = [row];
 
         changes.forEach(
-            function (stationaries) {
-                var next_row = [];
-                var swap = "";
-                result[result.length - 1].forEach(
-                    function (bell, place) {
-                        place = place + 1
-                        if (stationaries.includes((place).toString())) {
-                            next_row.push(bell);
-                            swap = "";
-                        } else if (swap != "") {
-                            next_row.push(bell);
-                            next_row.push(swap);
-                            swap = "";
-                        } else {
-                            swap = bell;
-                        }
-                    }
-                );
-                result.push(next_row);
+            function (stationaries, i) {
+                row = next_permutation(row, changes, i);
+                result.push(row);
             }
         );
         return result;
+    };
+
+    var next_permutation = function (row, changes, index)  {
+        var next_row = [];
+        var swap = "";
+        row.forEach(
+            function (bell, place) {
+                place = place + 1
+                if (changes[index].includes((place).toString())) {
+                    next_row.push(bell);
+                    swap = "";
+                } else if (swap != "") {
+                    next_row.push(bell);
+                    next_row.push(swap);
+                    swap = "";
+                } else {
+                    swap = bell;
+                }
+            }
+        );
+        return next_row
     };
 
     return {
