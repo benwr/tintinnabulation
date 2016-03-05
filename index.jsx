@@ -1,6 +1,6 @@
-'use strict'
+var ReactDOM = require('react-dom');
+var things = require('./Bells');
+Bells = things[0];
+Places = things[1];
 
-var ReactDOM = require('react-dom')
-var Bells = require('./Bells')
-
-ReactDOM.render(<Bells />, document.getElementById('content'))
+ReactDOM.render(<Bells />, document.getElementById('content'));

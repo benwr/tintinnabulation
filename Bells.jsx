@@ -1,12 +1,9 @@
 /* global require */
 /* global module */
 
-(function () {
-  'use strict';
-}());
-
 var React = require('react');
 var BellIcon = require('./bell_icon');
+var Places = require('./places');
 
 Bell = React.createClass({
   render: function () {
@@ -14,7 +11,7 @@ Bell = React.createClass({
   }
 });
 
-module.exports = React.createClass({
+Bells = React.createClass({
     displayName: 'Bells',
     render: function () {
       var bell_list = [];
@@ -24,3 +21,5 @@ module.exports = React.createClass({
       return <ul>{bell_list}</ul>;
     }
 });
+
+module.exports = [Bells, Places];
