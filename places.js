@@ -74,6 +74,8 @@ var Places = function () {
         if (index >= changes.length || index < 0) {
             index = mod(index, changes.length);
         }
+        console.log(index);
+
         row.forEach(
             function (bell, place) {
                 place = place + 1
