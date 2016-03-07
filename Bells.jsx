@@ -11,16 +11,6 @@ Bell = React.createClass({
   }
 });
 
-Bells = React.createClass({
-    render: function () {
-      var bell_list = [];
-      for (var i = 0; i < 6/*this.props.number*/; i++) {
-        bell_list.push(<li style={{listStyleType: "None"}} key={i} id={"bell_" + i}><Bell /></li>);
-      }
-      return <ul>{bell_list}</ul>;
-    }
-});
-
 Overlay = React.createClass({
   getDefaultProps: function () {
     return {
@@ -115,7 +105,7 @@ Diagram = React.createClass({
       row.forEach(
         function (bell, i) {
           var ref = function (td) {
-            if (follows.includes(bell)) {
+            if (follows.includes(bell) && td !== null) {
               line_coords[bell].push([td.offsetLeft + (td.offsetWidth / 2),
                                       td.offsetTop + (td.offsetHeight / 2)]);
             }
@@ -147,9 +137,32 @@ Diagram = React.createClass({
               <table>
                 <tbody>{result_rows}</tbody>
               </table>
-              <Overlay bells={this.props.follow} ref={function (c) {c.setState({locations: line_coords});}} />
+              <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
     </div>);
   },
+});
+
+
+Bells = React.createClass({
+  getInitialState: function () {
+    return {method: "x18x18x18x18 le:12"};
+  },
+  handleMethodChange: function (event) {
+    this.setState({method: event.target.value});
+  },
+  render: function () {
+      var bell_list = [];
+      for (var i = 0; i < 6/*this.props.number*/; i++) {
+        bell_list.push(<li style={{listStyleType: "None"}} key={i} id={"bell_" + i}><Bell /></li>);
+      }
+      return (
+        <div id="bells">
+          <input type="text" value={this.state.method} onChange={this.handleMethodChange} />
+          <Diagram rows_before="2" follow="12" rows_after="20" row="12345678" index="0" method={this.state.method}/>
+          <ul>{bell_list}</ul>
+        </div>
+        );
+    }
 });
 
 module.exports = [Bells, Diagram, Places];
