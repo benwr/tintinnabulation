@@ -17,9 +17,11 @@ Overlay = React.createClass({
       bells: "12",
     };
   },
+
   getInitialState: function () {
     return {"locations" : {}};
   },
+
   render: function () {
     var overlay = this;
 
@@ -72,7 +74,7 @@ Overlay = React.createClass({
     });
     
     return <div style={{position: "static"}}>
-      {minilines}
+    {minilines}
     </div>;
   },
 });
@@ -107,6 +109,7 @@ Diagram = React.createClass({
     var line_coords = {};
     follows.forEach(function (bell) {
       line_coords[bell] = [];
+      console.log(bell);
     });
     
     var bell_divs = [];
@@ -143,13 +146,11 @@ Diagram = React.createClass({
       result_rows.push(<tr key={i + rows_before + 1}>{layout_row(rows[i + rows_before + 1])}</tr>);
     }
 
-    // Build bell following overlay
-
-    return (<div style={{margin: "0 auto", position: "relative"}}>
-              <table>
-                <tbody>{result_rows}</tbody>
-                <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
-              </table>
+    return (<div style={{margin: "0 auto", position: "relative", textAlign: "center"}}>
+      <table>
+        <tbody>{result_rows}</tbody>
+      </table>
+      <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
     </div>);
   },
 });
@@ -159,33 +160,64 @@ Bells = React.createClass({
   getInitialState: function () {
     return {method: "x18x18x18x18 le:12", follow: "12", num: "8"};
   },
+
   handleMethodChange: function (event) {
     this.setState({method: event.target.value});
   },
+
   handleFollowChange: function (event) {
     this.setState({follow: event.target.value});
   },
+
+  handleNumChange: function (event) {
+    this.setState({num: event.target.value});
+  },
+
   render: function () {
-      var bell_list = [];
-      for (var i = 0; i < 6/*this.props.number*/; i++) {
-        bell_list.push(<li style={{listStyleType: "None"}} key={i} id={"bell_" + i}><Bell /></li>);
-      }
-      return (
-        <div id="bells" style={{width: "100%"}}>
-          <div id="inputs" style={{width: "50%", margin: "0 auto"}}>
-            <table>
-              <tbody>
-                <tr><td>Number of bells:</td><td><input type="text" value={this.state.num} onChange={this.handleNumChange} /></td></tr>
-                <tr><td>Place notation:</td><td><input type="text" value={this.state.method} onChange={this.handleMethodChange} /></td></tr>
-                <tr><td>Follow bells:</td><td><input type="text" value={this.state.follow} onChange={this.handleFollowChange} /></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <Diagram rows_before="2" follow={this.state.follow} rows_after="20" row="12345678" index="0" method={this.state.method}/>
+    var bell_list = [];
+    for (var i = 0; i < 6/*this.props.number*/; i++) {
+      bell_list.push(
+        <li style={{listStyleType: "None"}} key={i} id={"bell_" + i}>
+          <Bell />
+        </li>
+      );
+    }
+
+    var start_row = [];
+
+    for (i = 0; i < this.state.num; i++) {
+      start_row.push(Places.bell_names[i]);
+    }
+
+    return (
+      <div id="bells" style={{textAlign: "center"}}>
+        <div id="inputs" style={{display: "inline-block", textAlign: "center", margin: "0 auto"}}>
+          <table style={{textAlign: "center"}}>
+            <tbody style={{display: "inline-block", textAlign: "center"}}>
+              <tr style={{display: "inline-block"}}>
+                <td>Number of bells:</td>
+                <td><input type="text" value={this.state.num} onChange={this.handleNumChange} /></td>
+              </tr>
+              <tr>
+                <td>Place notation:</td>
+                <td><input type="text" value={this.state.method} onChange={this.handleMethodChange} /></td>
+              </tr>
+              <tr>
+                <td>Controlled bells:</td>
+                <td><input type="text" value={this.state.follow} onChange={this.handleFollowChange} /></td>
+              </tr>
+            </tbody>
+          </table>
+          <Diagram rows_before="2"
+                   follow={this.state.follow.toUpperCase()}
+                   rows_after="20" row={start_row.join("").toUpperCase()}
+                   index="0"
+                   method={this.state.method} />
           <ul style={{width: "50%", margin: "0 auto"}}>{bell_list}</ul>
         </div>
-        );
-    }
+      </div>
+    );
+  }
 });
 
 module.exports = [Bells, Diagram, Places];

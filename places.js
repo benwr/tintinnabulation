@@ -79,7 +79,7 @@ var Places = function () {
 
         row.forEach(
             function (bell, place) {
-                place = place + 1
+                place = bell_names[place];
                 if (changes[index].includes((place).toString())) {
                     next_row.push(bell);
                     swap = "";
@@ -121,6 +121,7 @@ var Places = function () {
         method_from_place_notation: method_from_place_notation,
         method_segment: method_segment,
         inverse_bell_names: inverse_bell_names,
+        bell_names: bell_names,
         bell_colors: bell_colors,
     };
 }();
