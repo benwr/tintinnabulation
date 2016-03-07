@@ -83,6 +83,18 @@ Diagram = React.createClass({
     return {follow: "12"};
   },
 
+  resize: function () {
+    this.forceUpdate();
+  },
+
+  componentDidMount: function () {
+    window.addEventListener("resize", this.resize);
+  },
+
+  componentWillUnmount: function () {
+    window.removeEventListener("resize", this.resize);
+  },
+
   render: function() {
     var diagram = this;
     diagram.locations = null;
@@ -133,11 +145,11 @@ Diagram = React.createClass({
 
     // Build bell following overlay
 
-    return (<div style={{position: "relative"}}>
+    return (<div style={{margin: "0 auto", position: "relative"}}>
               <table>
                 <tbody>{result_rows}</tbody>
+                <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
               </table>
-              <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
     </div>);
   },
 });
@@ -145,10 +157,13 @@ Diagram = React.createClass({
 
 Bells = React.createClass({
   getInitialState: function () {
-    return {method: "x18x18x18x18 le:12"};
+    return {method: "x18x18x18x18 le:12", follow: "12", num: "8"};
   },
   handleMethodChange: function (event) {
     this.setState({method: event.target.value});
+  },
+  handleFollowChange: function (event) {
+    this.setState({follow: event.target.value});
   },
   render: function () {
       var bell_list = [];
@@ -156,10 +171,18 @@ Bells = React.createClass({
         bell_list.push(<li style={{listStyleType: "None"}} key={i} id={"bell_" + i}><Bell /></li>);
       }
       return (
-        <div id="bells">
-          <input type="text" value={this.state.method} onChange={this.handleMethodChange} />
-          <Diagram rows_before="2" follow="12" rows_after="20" row="12345678" index="0" method={this.state.method}/>
-          <ul>{bell_list}</ul>
+        <div id="bells" style={{width: "100%"}}>
+          <div id="inputs" style={{width: "50%", margin: "0 auto"}}>
+            <table>
+              <tbody>
+                <tr><td>Number of bells:</td><td><input type="text" value={this.state.num} onChange={this.handleNumChange} /></td></tr>
+                <tr><td>Place notation:</td><td><input type="text" value={this.state.method} onChange={this.handleMethodChange} /></td></tr>
+                <tr><td>Follow bells:</td><td><input type="text" value={this.state.follow} onChange={this.handleFollowChange} /></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <Diagram rows_before="2" follow={this.state.follow} rows_after="20" row="12345678" index="0" method={this.state.method}/>
+          <ul style={{width: "50%", margin: "0 auto"}}>{bell_list}</ul>
         </div>
         );
     }
