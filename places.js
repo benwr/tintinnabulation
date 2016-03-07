@@ -48,6 +48,9 @@ var Places = function () {
     bell_names.forEach(function (val, index) {
         inverse_bell_names[val] = index + 1;
     });
+
+    var bell_colors =  ["#00f", "#f00", "#0f0", "#ff0", "#0ff", "#f0f", "#000", "#999", "#009",
+                      "#900", "#090", "#990", "#099", "#909", "#99f", "#f99"];
             
     var method_from_place_notation = function (s, n) {
         var changes = lex_place_notation(s);
@@ -74,7 +77,6 @@ var Places = function () {
         if (index >= changes.length || index < 0) {
             index = mod(index, changes.length);
         }
-        console.log(index);
 
         row.forEach(
             function (bell, place) {
@@ -98,11 +100,29 @@ var Places = function () {
         return next_permutation(row, changes, index - 1);
     };
 
+    var method_segment = function (changes, current_row, start, end) {
+        var rows = [current_row];
+        var current = current_row;
+        for (var i = 0; i < start; i++) {
+            current = Places.prev_permutation(current, changes, index - i);
+            rows.unshift(current);
+        }
+        current = current_row;
+        for (i = 0; i < end; i++) {
+            current = Places.next_permutation(current, changes, index + i);
+            rows.push(current);
+        }
+        return rows;
+    };
+
     return {
         lex_place_notation: lex_place_notation,
         next_permutation: next_permutation,
         prev_permutation: prev_permutation,
         method_from_place_notation: method_from_place_notation,
+        method_segment: method_segment,
+        inverse_bell_names: inverse_bell_names,
+        bell_colors: bell_colors,
     };
 }();
 

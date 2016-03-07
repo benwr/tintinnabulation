@@ -21,17 +21,112 @@ Bells = React.createClass({
     }
 });
 
+Overlay = React.createClass({
+  getDefaultProps: function () {
+    return {
+      bells: "12",
+    };
+  },
+  getInitialState: function () {
+    return {"locations" : {}};
+  },
+  render: function () {
+    var overlay = this;
+
+
+    var follows = this.props.bells.split("");
+
+    var makeSegments = function (index) {
+      var segments = [];
+      index = index;
+      if (!overlay.state.locations[index]) return [];
+      var points = overlay.state.locations[index];
+      last = [];
+      points.forEach(function (p, i) {
+        if (i === 0) {
+          last = p;
+        } else {
+          segments.push([last, p, index]);
+          last = p;
+        }
+      });
+      console.log(segments);
+      return segments;
+    };
+
+    var drawSegment = function (s, i) {
+      var left = Math.min(s[0][0], s[1][0]);
+      var top = Math.min(s[0][1], s[1][1]);
+      var width = Math.max(s[0][0], s[1][0]) - left;
+      var height = Math.max(s[0][1], s[1][1]) - top;
+      var line_length = Math.sqrt(width * width + height * height);
+      var deg = Math.atan2(height, width) * (180 / Math.PI) - 90;
+      if (s[0][0] > s[1][0]) {
+        deg = 360 - deg;
+        left = left + width;
+      }
+      var color = Places.bell_colors[Places.inverse_bell_names[s[2]]];
+      console.log(s[2]);
+      console.log(color);
+      minilines.push(<div key={"" + s[0][0] + i} style={{
+                                                        position: "absolute",
+                                                        opacity: "0.5",
+                                                        left: left,
+                                                        top: top,
+                                                        width: 0,
+                                                        height: line_length,
+                                                        transform: "rotate(" + deg + "deg)",
+                                                        transformOrigin: "top left",
+                                                        border: "0.05em solid " + color,
+                                                        }} />);
+    };
+    
+    var minilines = [];
+    follows.forEach(function (val) {
+      makeSegments(val).forEach(drawSegment);
+    });
+    console.log(minilines);
+    
+    return <div style={{position: "static"}}>
+      {minilines}
+    </div>;
+  },
+});
+
 
 Diagram = React.createClass({
+  getDefaultProps: function () {
+    return {follow: "12"};
+  },
+
   render: function() {
+    var diagram = this;
+    diagram.locations = null;
     var changes = Places.lex_place_notation(this.props.method);
     index = parseInt(this.props.index);
+
+    follows = this.props.follow.split("");
+
+
+    var line_coords = {};
+    follows.forEach(function (bell) {
+      line_coords[bell] = [];
+    });
     
+    var bell_divs = [];
     var layout_row = function (row) {
+      bell_divs.push([]);
+      var rownum = bell_divs.length - 1;
       var bells = [];
       row.forEach(
         function (bell, i) {
-          bells.push(<td key={i}>{bell}</td>);
+          var ref = function (td) {
+            if (follows.includes(bell)) {
+              line_coords[bell].push([td.offsetLeft + (td.offsetWidth / 2),
+                                      td.offsetTop + (td.offsetHeight / 2)]);
+            }
+          };
+          bells.push(<td key={i} ref={ref}>{bell}</td>);
         }
       );
       return bells;
@@ -39,26 +134,27 @@ Diagram = React.createClass({
 
     var current = this.props.row.split("");
 
-    var rows = [<tr style={{color: "green"}} key="special">{layout_row(current)}</tr>];
+    var rows_before = parseInt(this.props.rows_before);
+    var rows_after = parseInt(this.props.rows_after);
+    rows = Places.method_segment(changes, current, rows_before, rows_after);
 
-    for (var i = 0; i < parseInt(this.props.rows_before); i++) {
-      current = Places.prev_permutation(current, changes, index - i);
-      rows.unshift(<tr key={i}>{layout_row(current)}</tr>);
+    result_rows = [];
+    for (i = 0; i < rows_before; i++) {
+      result_rows.push(<tr style={{color: "grey"}} key={i}>{layout_row(rows[i])}</tr>);
+    }
+    result_rows.push(<tr style={{color: "green"}} key="special">{layout_row(rows[rows_before])}</tr>);
+    for (i = 0; i < rows_after; i++) {
+      result_rows.push(<tr key={i + rows_before + 1}>{layout_row(rows[i + rows_before + 1])}</tr>);
     }
 
-    current = this.props.row.split("");
+    // Build bell following overlay
 
-    for (i = 0; i < this.props.rows_after; i++) {
-      current = Places.next_permutation(current, changes, index + i);
-      rows.push(<tr key={i + this.props.rows_before}>{layout_row(current)}</tr>);
-    }
-    return (
-      <table>
-        <tbody>
-        {rows}
-        </tbody>
-      </table>
-    );
+    return (<div style={{position: "relative"}}>
+              <table>
+                <tbody>{result_rows}</tbody>
+              </table>
+              <Overlay bells={this.props.follow} ref={function (c) {c.setState({locations: line_coords});}} />
+    </div>);
   },
 });
 
