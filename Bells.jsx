@@ -59,7 +59,7 @@ Overlay = React.createClass({
       var top = Math.min(s[0][1], s[1][1]);
       var width = Math.max(s[0][0], s[1][0]) - left;
       var height = Math.max(s[0][1], s[1][1]) - top;
-      var line_length = Math.sqrt(width * width + height * height);
+      var line_length = Math.sqrt(width * width + height * height) - 0.8;
       var deg = Math.atan2(height, width) * (180 / Math.PI) - 90;
       if (s[0][0] > s[1][0]) {
         deg = 360 - deg;
@@ -70,7 +70,6 @@ Overlay = React.createClass({
       console.log(color);
       minilines.push(<div key={"" + s[0][0] + i} style={{
                                                         position: "absolute",
-                                                        opacity: "0.5",
                                                         left: left,
                                                         top: top,
                                                         width: 0,

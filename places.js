@@ -46,7 +46,7 @@ var Places = function () {
                       "0", "E", "T", "A", "B", "C", "D"];
     var inverse_bell_names=  {};
     bell_names.forEach(function (val, index) {
-        inverse_bell_names[val] = index + 1;
+        inverse_bell_names[val] = index;
     });
 
     var bell_colors =  ["#00f", "#f00", "#0f0", "#ff0", "#0ff", "#f0f", "#000", "#999", "#009",
