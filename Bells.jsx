@@ -33,7 +33,6 @@ Overlay = React.createClass({
   render: function () {
     var overlay = this;
 
-
     var follows = this.props.bells.split("");
 
     var makeSegments = function (index) {
@@ -50,7 +49,6 @@ Overlay = React.createClass({
           last = p;
         }
       });
-      console.log(segments);
       return segments;
     };
 
@@ -66,8 +64,6 @@ Overlay = React.createClass({
         left = left + width;
       }
       var color = Places.bell_colors[Places.inverse_bell_names[s[2]]];
-      console.log(s[2]);
-      console.log(color);
       minilines.push(<div key={"" + s[0][0] + i} style={{
                                                         position: "absolute",
                                                         left: left,
@@ -84,7 +80,6 @@ Overlay = React.createClass({
     follows.forEach(function (val) {
       makeSegments(val).forEach(drawSegment);
     });
-    console.log(minilines);
     
     return <div style={{position: "static"}}>
       {minilines}

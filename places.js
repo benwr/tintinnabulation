@@ -34,7 +34,6 @@ var Places = function () {
 
         if (lead_end) {
             var reversed = rows.slice();
-            reversed.reverse();
             rows = rows.concat(reversed.slice(0, -1));
             rows.push(lead_end.split(""));
         }
