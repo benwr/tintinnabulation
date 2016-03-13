@@ -1,45 +1,5 @@
 var Places = function () {
     "use strict";
-    var lex_place_notation = function (s) {
-        var lead_end = '';
-        var split = s.split("le");
-        s = split[0].replace(" ", "");
-        if (split.length == 2) {
-            lead_end = split[1];
-            lead_end = lead_end.replace(/[ :]/, '')
-        } else {
-            lead_end = null;
-        }
-
-        var rows = [];
-        var current_change = []
-        s.toUpperCase().split('').forEach(function (c, i) {
-            switch (c) {
-            case "X":
-                rows.push(current_change);
-                current_change = [];
-                if (i > 0) rows.push([]);
-                break;
-            case ".":
-            case "-":
-                rows.push(current_change);
-                current_change = [];
-                break;
-            default:
-                current_change.push(c);
-            }
-        });
-
-        if (current_change.length > 0) rows.push(current_change);
-
-        if (lead_end) {
-            var reversed = rows.slice();
-            rows = rows.concat(reversed.slice(0, -1));
-            rows.push(lead_end.split(""));
-        }
-
-        return rows;
-    };
 
     var bell_names = ["1", "2", "3", "4", "5", "6", "7", "8", "9",
                       "0", "E", "T", "A", "B", "C", "D"];
@@ -51,6 +11,54 @@ var Places = function () {
     var bell_colors =  ["#00f", "#f00", "#0f0", "#ff0", "#0ff", "#f0f", "#000", "#999", "#009",
                       "#900", "#090", "#990", "#099", "#909", "#99f", "#f99"];
             
+    var lex_place_notation = function (s) {
+        var lead_end = '';
+        var split = s.split("le");
+        s = split[0].replace(" ", "");
+        if (split.length == 2) {
+            lead_end = split[1];
+            lead_end = lead_end.replace(/[ :]/, '')
+        } else {
+            lead_end = null;
+        }
+
+        function push_change(change) {
+            change.sort(function (a, b) {
+                return inverse_bell_names[a] - inverse_bell_names[b];
+            });
+            rows.push(change);
+        }
+
+        var rows = [];
+        var current_change = []
+        s.toUpperCase().split('').forEach(function (c, i) {
+            switch (c) {
+            case "X":
+                push_change(current_change);
+                current_change = [];
+                if (i > 0) push_change([]);
+                break;
+            case ".":
+            case "-":
+                push_change(current_change);
+                current_change = [];
+                break;
+            default:
+                current_change.push(c);
+            }
+        });
+
+        if (current_change.length > 0) push_change(current_change);
+
+        if (lead_end) {
+            var reversed = rows.slice();
+            rows = rows.concat(reversed.slice(0, -1));
+            rows.push(lead_end.split(""));
+        }
+
+        return rows;
+    };
+
     var method_from_place_notation = function (s, n) {
         var changes = lex_place_notation(s);
         var row = [];
@@ -114,7 +122,26 @@ var Places = function () {
         return rows;
     };
 
+    var changes_valid = function (changes, n) {
+        try {
+            changes.forEach(function (row) {
+                if (row.length % 2 !== n % 2)  throw Break;
+                var last = -1;
+                row.forEach(function (bell) {
+                    var bellnum = inverse_bell_names[bell];
+                    if ((bellnum - last) % 2 === 0) throw Break;
+                    if (bellnum >= n) throw Break;
+                    last = bellnum;
+                });
+            });
+        } catch (e) {
+            return false;
+        }
+        return true;
+    };
+
     return {
+        changes_valid: changes_valid,
         lex_place_notation: lex_place_notation,
         next_permutation: next_permutation,
         prev_permutation: prev_permutation,
