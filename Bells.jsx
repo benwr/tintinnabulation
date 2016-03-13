@@ -247,6 +247,7 @@ Bells = React.createClass({
                    index="0"
                    method={this.state.method} />
           <ul style={{padding: "0", margin: "0 0"}}>{bell_list}</ul>
+          <PlayBells />
         </div>
       </div>
     );
