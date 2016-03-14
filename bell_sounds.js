@@ -1,7 +1,6 @@
 bell_sounds = function () {
     ctx = new AudioContext();
     var ring_bell = function (freq, length) {
-        console.log("freq: " + freq + " length: " + length);
         osc = ctx.createOscillator();
         gain = ctx.createGain();
         osc.frequency.value = freq;

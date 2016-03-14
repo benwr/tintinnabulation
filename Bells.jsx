@@ -66,6 +66,7 @@ Overlay = React.createClass({
                                                         transform: "rotate(" + deg + "deg)",
                                                         transformOrigin: "top left",
                                                         border: "0.05em solid " + color,
+                                                        background: color,
                                                         }} />);
     };
     
@@ -228,6 +229,14 @@ Bells = React.createClass({
     });
   },
 
+  reset: function () {
+    var start_row = [];
+    for (i = 0; i < this.state.num; i++) {
+      start_row.push(Places.bell_names[i]);
+    }
+    this.setState({index: 0, row: start_row});
+  },
+
   render: function () {
     var bells = this;
     var bell_list = [];
@@ -251,7 +260,7 @@ Bells = React.createClass({
     return (
       <div id="bells" style={{textAlign: "center"}}>
         <div id="inputs" style={{display: "inline-block", textAlign: "right", margin: "0 auto"}}>
-          <table>
+          <table style={{margin: "1em"}}>
             <tbody>
               <tr>
                 <td style={{textAlign: "right"}}>Number of bells:</td>
@@ -304,7 +313,16 @@ Bells = React.createClass({
                    index={this.state.index}
                    method={this.state.method} />
           <ul style={{padding: "0", margin: "0 0"}}>{bell_list}</ul>
-          <PlayBells line={this.state.row} speed={10} ref={function (c) {if (c) c._advanceRow = bells.advanceRow;}} />
+          <PlayBells line={this.state.row}
+                     speed={10}
+                     ref={
+                          function (c) {
+                            if (c) {
+                              c._advanceRow = bells.advanceRow;
+                              c._reset = bells.reset;
+                            }
+                          }
+                     } />
         </div>
       </div>
     );

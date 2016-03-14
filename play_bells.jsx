@@ -11,7 +11,9 @@ PlayBells = React.createClass({
   },
   nextNote: function () {
     if (this.state.active) {
-      bell_sounds.ring_bell(this.props.freqs[this.props.line[this.state.index]], 1500 / this.props.speed);
+      bell_sounds.ring_bell(
+        this.props.freqs[this.props.line[this.state.index]],
+        1500 / this.props.speed);
       var base_timing = this.state.index + 1 === this.props.line.length && this.state.parity ? 8000 : 4000;
       var timeout = setTimeout(this.nextNote, base_timing / this.props.speed);
       var newparity = this.state.parity;
@@ -19,7 +21,9 @@ PlayBells = React.createClass({
         this._advanceRow();
         newparity = !newparity;
       }
-      this.setState({index: (this.state.index + 1) % this.props.line.length, timeout: timeout, parity: newparity});
+      this.setState({index: (this.state.index + 1) % this.props.line.length,
+                     timeout: timeout,
+                     parity: newparity});
     }
   },
 
@@ -28,6 +32,14 @@ PlayBells = React.createClass({
       active: !this.state.active,
     });
     setTimeout(this.nextNote, 0);
+  },
+  restartMethod: function () {
+    this.setState({
+      index: 0,
+      timeout: null,
+      parity: 1,
+    });
+    this._reset();
   },
   getDefaultProps: function () {
     return {
@@ -56,10 +68,11 @@ PlayBells = React.createClass({
   render: function () {
     if (this.state.timeout === null) {
     }
-    var btntext = this.state.active ? "Stop" : "Play";
+    var playtext = this.state.active ? "Pause" : "Play";
     return (
-      <div>
-        <button onClick={this.toggleActive}>{btntext}</button>
+      <div style={{textAlign: "center"}}>
+        <button style={{height: "2em", margin: "1em", fontSize: "0.6em", width: "6em"}} onClick={this.toggleActive}>{playtext}</button>
+        <button style={{height: "2em", margin: "1em", fontSize: "0.6em", width: "6em"}} onClick={this.restartMethod}>Reset</button>
       </div>
     );
   },
