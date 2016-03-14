@@ -301,7 +301,7 @@ Bells = React.createClass({
                    follow={this.state.follow.toUpperCase()}
                    rows_after="6"
                    row={this.state.row.join("").toUpperCase()}
-                   index="0"
+                   index={this.state.index}
                    method={this.state.method} />
           <ul style={{padding: "0", margin: "0 0"}}>{bell_list}</ul>
           <PlayBells line={this.state.row} speed={10} ref={function (c) {if (c) c._advanceRow = bells.advanceRow;}} />

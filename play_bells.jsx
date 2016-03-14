@@ -1,20 +1,33 @@
 var bell_sounds = require("./bell_sounds");
 PlayBells = React.createClass({
+
   getInitialState: function () {
     return {
       index: 0,
-      active: true,
+      parity: 1,
+      active: false,
       timeout: null,
     };
   },
   nextNote: function () {
     if (this.state.active) {
       bell_sounds.ring_bell(this.props.freqs[this.props.line[this.state.index]], 1500 / this.props.speed);
-      console.log(" Would set");
-      var timeout = setTimeout(this.nextNote, 4000 / this.props.speed);
-      if (this.state.index === this.props.line.length - 1) this._advanceRow();
-      this.setState({index: (this.state.index + 1) % this.props.line.length, timeout: timeout});
+      var base_timing = this.state.index + 1 === this.props.line.length && this.state.parity ? 8000 : 4000;
+      var timeout = setTimeout(this.nextNote, base_timing / this.props.speed);
+      var newparity = this.state.parity;
+      if (this.state.index === this.props.line.length - 1) {
+        this._advanceRow();
+        newparity = !newparity;
+      }
+      this.setState({index: (this.state.index + 1) % this.props.line.length, timeout: timeout, parity: newparity});
     }
+  },
+
+  toggleActive: function () {
+    this.setState({
+      active: !this.state.active,
+    });
+    setTimeout(this.nextNote, 0);
   },
   getDefaultProps: function () {
     return {
@@ -42,9 +55,13 @@ PlayBells = React.createClass({
   },
   render: function () {
     if (this.state.timeout === null) {
-      setTimeout(this.nextNote, 5 * 1000);
     }
-    return <div />;
+    var btntext = this.state.active ? "Stop" : "Play";
+    return (
+      <div>
+        <button onClick={this.toggleActive}>{btntext}</button>
+      </div>
+    );
   },
 });
 module.exports = PlayBells;
