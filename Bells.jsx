@@ -125,7 +125,7 @@ Diagram = React.createClass({
                                       td.offsetTop + (td.offsetHeight / 2)]);
             }
           };
-          bells.push(<td style={{border: "none", padding:"0", margin:"0"}} key={i} ref={ref}>{bell}</td>);
+          bells.push(<td style={{minWidth: "0.8em", border: "none", padding:"0", margin:"0"}} key={i} ref={ref}>{bell}</td>);
         }
       );
       return bells;
@@ -161,11 +161,24 @@ Diagram = React.createClass({
 
 
 Bells = React.createClass({
+  getDefaultProps: function () {
+    return {
+      initial_num: 8,
+    };
+  },
+
   getInitialState: function () {
+    var start_row = [];
+
+    for (i = 0; i < this.props.initial_num; i++) {
+      start_row.push(Places.bell_names[i]);
+    }
     return {method: "x18x18x18x18 le:12",
             attempted_method: "x18x18x18x18 le:12",
             follow: "12",
-            num: "8",
+            num: this.props.initial_num,
+            row: start_row,
+            index: 0,
             attempted_num: "8",
             valid: true,
     };
@@ -207,7 +220,16 @@ Bells = React.createClass({
     }
   },
 
+  advanceRow: function () {
+    changes = Places.lex_place_notation(this.state.method);
+    this.setState({
+      row: Places.next_permutation(this.state.row, changes, this.state.index),
+      index: this.state.index + 1,
+    });
+  },
+
   render: function () {
+    var bells = this;
     var bell_list = [];
     /*
     for (var i = 0; i < this.props.number; i++) {
@@ -219,14 +241,8 @@ Bells = React.createClass({
     }
     */
 
-    var start_row = [];
-
-    for (i = 0; i < this.state.num; i++) {
-      start_row.push(Places.bell_names[i]);
-    }
-
     if (this.state.valid) {
-      method_background = "white";
+      method_background = "inherit";
     } else {
       method_background = "#f99";
     }
@@ -234,20 +250,61 @@ Bells = React.createClass({
 
     return (
       <div id="bells" style={{textAlign: "center"}}>
-        <div id="inputs" style={{display: "inline-block", textAlign: "center", margin: "0 auto"}}>
-            Number of bells:<br />
-            <input style={{width: 100}}  type="text" value={this.state.attempted_num} onChange={this.handleNumChange} /><br />
-                Place notation:<br />
-                <input style={{width: 100, backgroundColor: method_background}} type="text" value={this.state.attempted_method} onChange={this.handleMethodChange} /><br />
-                Controlled bells:<br />
-                <input style={{width: 100}} type="text" value={this.state.follow} onChange={this.handleFollowChange} /><br />
+        <div id="inputs" style={{display: "inline-block", textAlign: "right", margin: "0 auto"}}>
+          <table>
+            <tbody>
+              <tr>
+                <td style={{textAlign: "right"}}>Number of bells:</td>
+                <td style={{textAlign: "left"}}><input style={{textAlign: "center",
+                                                               width: "10em",
+                                                               marginLeft: "0.5em",
+                                                               border: "none",
+                                                               borderBottom: "1px dashed black",
+                                                               fontFamily: "inherit",
+                                                               fontSize: "inherit",
+                                                               background: "inherit"}}
+                                                       type="text"
+                                                       value={this.state.attempted_num}
+                                                       onChange={this.handleNumChange} /></td>
+              </tr>
+              <tr>
+                <td style={{textAlign: "right"}}>Place notation:</td>
+                <td style={{textAlign: "left"}}><input style={{backgroundColor: method_background,
+                                                               textAlign: "center",
+                                                               width: "10em",
+                                                               marginLeft: "0.5em",
+                                                               border: "none",
+                                                               borderBottom: "1px dashed black",
+                                                               fontFamily: "inherit",
+                                                               fontSize: "inherit"}}
+                                                       type="text"
+                                                       value={this.state.attempted_method}
+                                                       onChange={this.handleMethodChange} /></td>
+              </tr>
+              <tr>
+                <td style={{textAlign: "right"}}>Controlled bells:</td>
+                <td style={{textAlign: "left"}}><input style={{textAlign: "center",
+                                                               width: "10em",
+                                                               marginLeft: "0.5em",
+                                                               border: "none",
+                                                               borderBottom: "1px dashed black",
+                                                               fontFamily: "inherit",
+                                                               fontSize: "inherit",
+                                                               background: "inherit"}}
+                                                       type="text"
+                                                       value={this.state.follow}
+                                                       onChange={this.handleFollowChange} /></td>
+              </tr>
+            </tbody>
+          </table>
           <Diagram rows_before="2"
                    follow={this.state.follow.toUpperCase()}
-                   rows_after="6" row={start_row.join("").toUpperCase()}
+                   rows_after="6"
+                   row={this.state.row.join("").toUpperCase()}
                    index="0"
                    method={this.state.method} />
           <ul style={{padding: "0", margin: "0 0"}}>{bell_list}</ul>
-          <PlayBells />
+          <PlayBells line={this.state.row} speed={10} ref={function (c) {if (c) c._advanceRow = bells.advanceRow;}} />
         </div>
       </div>
     );
