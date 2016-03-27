@@ -6,13 +6,13 @@ var BellIcon = require('./bell_icon');
 var PlayBells = require('./play_bells');
 var Places = require('./places');
 
-Bell = React.createClass({
+var Bell = React.createClass({
   render: function () {
     return <BellIcon />;
-  }
+  },
 });
 
-Overlay = React.createClass({
+var Overlay = React.createClass({
   getDefaultProps: function () {
     return {
       bells: "12",
@@ -30,10 +30,9 @@ Overlay = React.createClass({
 
     var makeSegments = function (index) {
       var segments = [];
-      index = index;
       if (!overlay.state.locations[index]) return [];
       var points = overlay.state.locations[index];
-      last = [];
+      var last = [];
       points.forEach(function (p, i) {
         if (i === 0) {
           last = p;
@@ -82,7 +81,7 @@ Overlay = React.createClass({
 });
 
 
-Diagram = React.createClass({
+var Diagram = React.createClass({
   getDefaultProps: function () {
     return {follow: "12"};
   },
@@ -103,9 +102,8 @@ Diagram = React.createClass({
     var diagram = this;
     diagram.locations = null;
     var changes = Places.lex_place_notation(this.props.method);
-    index = parseInt(this.props.index);
 
-    follows = this.props.follow.split("");
+    var follows = this.props.follow.split("");
 
 
     var line_coords = {};
@@ -116,7 +114,6 @@ Diagram = React.createClass({
     var bell_divs = [];
     var layout_row = function (row) {
       bell_divs.push([]);
-      var rownum = bell_divs.length - 1;
       var bells = [];
       row.forEach(
         function (bell, i) {
@@ -136,9 +133,10 @@ Diagram = React.createClass({
 
     var rows_before = parseInt(this.props.rows_before);
     var rows_after = parseInt(this.props.rows_after);
-    rows = Places.method_segment(changes, current, rows_before, rows_after);
+    var rows = Places.method_segment(changes, current, rows_before, rows_after);
 
-    result_rows = [];
+    var i;
+    var result_rows = [];
     for (i = 0; i < rows_before; i++) {
       result_rows.push(<tr style={{color: "grey"}} key={i}>{layout_row(rows[i])}</tr>);
     }
@@ -161,7 +159,7 @@ Diagram = React.createClass({
 });
 
 
-Bells = React.createClass({
+var Bells = React.createClass({
   getDefaultProps: function () {
     return {
       initial_num: 8,
@@ -171,7 +169,7 @@ Bells = React.createClass({
   getInitialState: function () {
     var start_row = [];
 
-    for (i = 0; i < this.props.initial_num; i++) {
+    for (var i = 0; i < this.props.initial_num; i++) {
       start_row.push(Places.bell_names[i]);
     }
     return {method: "x18x18x18x18 le:12",
@@ -222,7 +220,7 @@ Bells = React.createClass({
   },
 
   advanceRow: function () {
-    changes = Places.lex_place_notation(this.state.method);
+    var changes = Places.lex_place_notation(this.state.method);
     this.setState({
       row: Places.next_permutation(this.state.row, changes, this.state.index),
       index: this.state.index + 1,
@@ -231,7 +229,7 @@ Bells = React.createClass({
 
   reset: function () {
     var start_row = [];
-    for (i = 0; i < this.state.num; i++) {
+    for (var i = 0; i < this.state.num; i++) {
       start_row.push(Places.bell_names[i]);
     }
     this.setState({index: 0, row: start_row});
@@ -250,6 +248,7 @@ Bells = React.createClass({
     }
     */
 
+    var method_background;
     if (this.state.valid) {
       method_background = "inherit";
     } else {
@@ -326,7 +325,7 @@ Bells = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 module.exports = [Bells, Diagram, Places];
