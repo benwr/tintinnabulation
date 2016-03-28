@@ -133,7 +133,7 @@ var Diagram = React.createClass({
 
     var rows_before = parseInt(this.props.rows_before);
     var rows_after = parseInt(this.props.rows_after);
-    var rows = Places.method_segment(changes, current, rows_before, rows_after);
+    var rows = Places.method_segment(changes, current, rows_before, rows_after, this.props.index);
 
     var i;
     var result_rows = [];
@@ -146,13 +146,13 @@ var Diagram = React.createClass({
     }
 
     return (
-<div style={{width: "100%", textAlign: "center", fontSize: "1.4em", fontFamily: "Helvetica"}}>
-      <div style={{margin: "0 auto", display: "inline-block",position: "relative", textAlign: "center"}}>
-      <table style={{borderSpacing: "0"}}>
-        <tbody>{result_rows}</tbody>
-      </table>
-      <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
-      </div>
+      <div style={{width: "100%", textAlign: "center", fontSize: "1.4em", fontFamily: "Helvetica"}}>
+        <div style={{margin: "0 auto", display: "inline-block",position: "relative", textAlign: "center"}}>
+          <table style={{borderSpacing: "0"}}>
+            <tbody>{result_rows}</tbody>
+          </table>
+          <Overlay bells={this.props.follow} ref={function (c) {if (c) c.setState({locations: line_coords});}} />
+        </div>
       </div>
     );
   },
@@ -239,14 +239,14 @@ var Bells = React.createClass({
     var bells = this;
     var bell_list = [];
     /*
-    for (var i = 0; i < this.props.number; i++) {
-      bell_list.push(
-        <li style={{listStyleType: "None"}} key={i} id={"bell_" + i}>
-          <Bell />
-        </li>
-      );
-    }
-    */
+       for (var i = 0; i < this.props.number; i++) {
+       bell_list.push(
+       <li style={{listStyleType: "None"}} key={i} id={"bell_" + i}>
+       <Bell />
+       </li>
+       );
+       }
+     */
 
     var method_background;
     if (this.state.valid) {

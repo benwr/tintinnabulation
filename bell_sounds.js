@@ -1,8 +1,8 @@
-bell_sounds = function () {
-    ctx = new AudioContext();
+var bell_sounds = function () {
+    var ctx = new AudioContext();
     var ring_bell = function (freq, length) {
-        osc = ctx.createOscillator();
-        gain = ctx.createGain();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
         osc.frequency.value = freq;
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -19,5 +19,7 @@ bell_sounds = function () {
         ring_bell: ring_bell,
     };
 }();
+
+bell_sounds.ring_bell();
 
 module.exports = bell_sounds;

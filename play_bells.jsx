@@ -1,6 +1,6 @@
+/* global React */
 var bell_sounds = require("./bell_sounds");
-PlayBells = React.createClass({
-
+var PlayBells = React.createClass({
   getInitialState: function () {
     return {
       index: 0,
@@ -31,8 +31,17 @@ PlayBells = React.createClass({
     this.setState({
       active: !this.state.active,
     });
-    setTimeout(this.nextNote, 0);
+    this.toggleWorker();
   },
+
+  toggleWorker: function () {
+    if (this.state.worker === null) {
+      this.setState({worker: new Worker("bell_player.js")});
+    } else {
+      this.state.worker.terminate();
+    }
+  },
+
   restartMethod: function () {
     this.setState({
       index: 0,
@@ -41,6 +50,7 @@ PlayBells = React.createClass({
     });
     this._reset();
   },
+
   getDefaultProps: function () {
     return {
       speed: 20,

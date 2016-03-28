@@ -9,15 +9,15 @@ var Places = function () {
     });
 
     var bell_colors =  ["#00f", "#f00", "#0f0", "#ff0", "#0ff", "#f0f", "#000", "#999", "#009",
-                      "#900", "#090", "#990", "#099", "#909", "#99f", "#f99"];
-            
+                        "#900", "#090", "#990", "#099", "#909", "#99f", "#f99"];
+    
     var lex_place_notation = function (s) {
         var lead_end = '';
         var split = s.split("le");
         s = split[0].replace(" ", "");
         if (split.length == 2) {
             lead_end = split[1];
-            lead_end = lead_end.replace(/[ :]/, '')
+            lead_end = lead_end.replace(/[ :]/, '');
         } else {
             lead_end = null;
         }
@@ -30,7 +30,7 @@ var Places = function () {
         }
 
         var rows = [];
-        var current_change = []
+        var current_change = [];
         s.toUpperCase().split('').forEach(function (c, i) {
             switch (c) {
             case "X":
@@ -100,14 +100,14 @@ var Places = function () {
                 }
             }
         );
-        return next_row
+        return next_row;
     };
 
     var prev_permutation = function (row, changes, index) {
         return next_permutation(row, changes, index - 1);
     };
 
-    var method_segment = function (changes, current_row, start, end) {
+    var method_segment = function (changes, current_row, start, end, index) {
         var rows = [current_row];
         var current = current_row;
         for (var i = 0; i < start; i++) {
